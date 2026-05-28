@@ -414,7 +414,7 @@ body.scrolled .hero {
         padding: 16px 8px 12px 12px;
         background: url('experience_card_mobile.png') center/cover no-repeat;
         width: 360px;
-        height: 280px;
+        height: 280.5px;
         min-width: 0;
         max-width: 100%;
         margin-left: auto;
@@ -428,6 +428,7 @@ body.scrolled .hero {
         padding: 18px 8px;
     }
     .hero-header-row {
+         background: rgba(30,60,114,0.25);
         flex-direction: column;
         gap: 12px;
     }
