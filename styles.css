@@ -3,10 +3,17 @@
 body {
     margin: 0;
     font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-    background: #000;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
+
+    background-image: url("/assets/body.png");
+    background-position: center top;
+    background-repeat: repeat-y;
+}
+
+.hero,
+main,
+footer {
+    position: relative;
+    z-index: 1;
 }
 
 .footer-links {
@@ -40,8 +47,6 @@ body {
     gap: 20px;
 }
 
-
-
 .card-gear-right {
     position: absolute;
     right: -26px;
@@ -61,51 +66,32 @@ body {
 }
 
 .hero {
+    --header-height: 700px;
+
     position: relative;
-    height: 70vh;
-    min-height: 420px;
+    height: var(--header-height);
+    min-height: var(--header-height);
+
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: linear-gradient(120deg, #1e3c72 0%, #2a5298 100%);
-    box-shadow: 0 8px 32px rgba(30,60,114,0.18);
-}
 
-.hero-content {
-    position: relative;
+    overflow: hidden;
+    background-image: url("/assets/header.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: auto;
+
+    text-shadow: #cc9900 1px 0 6px;
     z-index: 2;
     text-align: center;
     color: #fff;
-    backdrop-filter: blur(6px) saturate(1.2);
-    background: rgba(30,60,114,0.25);
-    border-radius: 18px;
-    padding: 32px 48px;
-    box-shadow: 0 4px 24px rgba(30,60,114,0.12);
-    animation: fadeInDown 1.2s cubic-bezier(.23,1.01,.32,1) 0.2s both;
 }
 
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-40px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.parallax-bg {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(120deg, #3a0ca3 0%, #007080 100%);
-    z-index: 1;
-    will-change: transform;
-}
-
-.parallax-overlay {
-     display: none;
-}
 
 main {
     max-width: 950px;
     margin: -100px auto 0 auto;
-    background: none;
     border-radius: 0;
     box-shadow: none;
     padding: 56px 32px 32px 32px;
@@ -204,15 +190,6 @@ footer {
     font-size: 1em;
     letter-spacing: 0.01em;
     background: transparent;
-}
-
-body.scrolled main {
-   transition: background 0.7s cubic-bezier(.23,1.01,.32,1);
-}
-
-body.scrolled .hero {
-    background: linear-gradient(120deg, #2a5298 0%, #1e3c72 100%);
-    transition: background 0.7s cubic-bezier(.23,1.01,.32,1);
 }
 
 .card-gear {
@@ -320,7 +297,6 @@ body.scrolled .hero {
     height: 220px;
     border-radius: 50%;
     object-fit: cover;
-    margin-top: 18px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.25);
 }
 
@@ -428,7 +404,6 @@ body.scrolled .hero {
         padding: 18px 8px;
     }
     .hero-header-row {
-         background: rgba(30,60,114,0.25);
         flex-direction: column;
         gap: 12px;
     }
