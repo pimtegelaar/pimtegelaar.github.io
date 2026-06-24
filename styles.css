@@ -4,7 +4,7 @@ body {
     margin: 0;
     font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
 
-    background-image: url("/assets/body.png");
+    background-image: url("/assets/body.webp");
     background-position: center top;
     background-repeat: repeat-y;
 }
@@ -77,7 +77,7 @@ footer {
     justify-content: center;
 
     overflow: hidden;
-    background-image: url("/assets/header.png");
+    background-image: url("/assets/header.webp");
     background-position: center top;
     background-repeat: no-repeat;
     background-size: auto;
