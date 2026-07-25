@@ -237,8 +237,13 @@ footer {
     pointer-events: none;
 }
 
-.experience > div[style*="display: flex"] {
+.experience > div[style*="display: flex"],
+.education > div[style*="display: flex"] {
     position: relative;
+}
+
+.education {
+    margin-top: 64px;
 }
 
 .card-content-row {

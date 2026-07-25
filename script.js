@@ -1,10 +1,9 @@
 "use strict";
 document.addEventListener('DOMContentLoaded', () => {
-    const timeline = document.getElementById('timeline');
-    const experiences = window.experiences || [];
-    if (timeline) {
-        experiences.forEach((exp, idx) => {
-
+    const renderTimeline = (timelineId, items) => {
+        const timeline = document.getElementById(timelineId);
+        if (!timeline) return;
+        items.forEach((item) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'experience-card-wrapper';
 
@@ -26,19 +25,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'experience-card';
             card.innerHTML = `
                 <div class="card-content-row">
-                    ${exp.logo ? `<img class="company-logo" src="${exp.logo}" alt="${exp.company} logo" />` : ''}
+                    ${item.logo ? `<img class="company-logo" src="${item.logo}" alt="${item.company} logo" />` : ''}
                     <div class="card-details">
-                        <h3>${exp.title}</h3>
-                        <h4>${exp.company}</h4>
-                        <span>${exp.period}</span>
-                        <p>${exp.description}</p>
+                        <h3>${item.title}</h3>
+                        <h4>${item.company}</h4>
+                        <span>${item.period}</span>
+                        <p>${item.description}</p>
                     </div>
                 </div>
             `;
             wrapper.appendChild(card);
             timeline.appendChild(wrapper);
         });
-    }
+    };
+
+    renderTimeline('timeline', window.experiences || []);
+    renderTimeline('education-timeline', window.education || []);
+
     const hero = document.querySelector('.hero');
     if (hero && !document.querySelector('.parallax-overlay')) {
         const overlay = document.createElement('div');
