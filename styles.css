@@ -388,6 +388,15 @@ footer {
     border-radius: 50%;
 }
 
+.titanic-game-button {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    transform: scale(0.7) rotate(10deg);
+    transform-origin: top right;
+    z-index: 1000;
+}
+
 
 @media (max-width: 1000px) {
     main {
@@ -428,6 +437,15 @@ footer {
     .big-pic {
         width: 120px;
         height: 120px;
+    }
+
+    .titanic-game-button {
+        position: absolute;
+        top: 20px;
+        right: 0;
+        transform: scale(0.3) rotate(10deg);
+        transform-origin: top right;
+        z-index: 1000;
     }
 }
 
@@ -481,5 +499,14 @@ footer {
     }
     .gear-rack-right {
         display: none;
+    }
+
+    .titanic-game-button {
+        position: absolute;
+        top: 20px;
+        right: 0;
+        transform: scale(0.3) rotate(10deg);
+        transform-origin: top right;
+        z-index: 1000;
     }
 }
