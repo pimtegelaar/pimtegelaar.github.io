@@ -395,6 +395,14 @@ footer {
     transform: scale(0.7) rotate(10deg);
     transform-origin: top right;
     z-index: 1000;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    filter: drop-shadow(0 0 0 rgba(42,82,152,0));
+}
+
+.titanic-game-button:hover,
+.titanic-game-button:focus {
+    transform: scale(0.78) rotate(0deg);
+    filter: drop-shadow(0 0 14px rgba(42,82,152,0.85));
 }
 
 
@@ -446,6 +454,11 @@ footer {
         transform: scale(0.3) rotate(10deg);
         transform-origin: top right;
         z-index: 1000;
+    }
+
+    .titanic-game-button:hover,
+    .titanic-game-button:focus {
+        transform: scale(0.3) rotate(10deg);
     }
 }
 
@@ -508,5 +521,10 @@ footer {
         transform: scale(0.3) rotate(10deg);
         transform-origin: top right;
         z-index: 1000;
+    }
+
+    .titanic-game-button:hover,
+    .titanic-game-button:focus {
+        transform: scale(0.3) rotate(10deg);
     }
 }
