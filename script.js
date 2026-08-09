@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-content-row">
                     ${item.logo ? `<img class="company-logo" src="${item.logo}" alt="${item.company} logo" />` : ''}
                     <div class="card-details">
-                        <h3>${item.title}</h3>
+                        <h3>${item.link ? `<a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>` : item.title}</h3>
                         <h4>${item.company}</h4>
                         <span>${item.period}</span>
                         <p>${item.description}</p>
@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderTimeline('timeline', window.experiences || []);
     renderTimeline('education-timeline', window.education || []);
+    renderTimeline('talks-timeline', window.talks || []);
 
     const hero = document.querySelector('.hero');
     if (hero && !document.querySelector('.parallax-overlay')) {

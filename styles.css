@@ -331,6 +331,15 @@ footer {
     color: #fff;
 }
 
+.experience-card h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.experience-card h3 a:hover {
+    text-decoration: underline;
+}
+
 .experience-card h4 {
     margin: 0 0 8px 0;
     font-size: 1.2rem;
