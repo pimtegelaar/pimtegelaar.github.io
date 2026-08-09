@@ -89,14 +89,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    window.addEventListener('scroll', animateCards);
-    animateCards();
-    window.addEventListener('scroll', () => {
+    let scrollTicking = false;
+    const onScroll = () => {
         if (window.scrollY > 60) {
             document.body.classList.add('scrolled');
         }
         else {
             document.body.classList.remove('scrolled');
         }
-    });
+        animateCards();
+        scrollTicking = false;
+    };
+    window.addEventListener('scroll', () => {
+        if (!scrollTicking) {
+            scrollTicking = true;
+            requestAnimationFrame(onScroll);
+        }
+    }, { passive: true });
+    animateCards();
 });
