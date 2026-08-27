@@ -246,6 +246,10 @@ footer {
     margin-top: 64px;
 }
 
+.talks {
+    margin-top: 64px;
+}
+
 .card-content-row {
     display: flex;
     align-items: center;
