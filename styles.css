@@ -423,17 +423,48 @@ footer {
     main {
         padding: 18px 2px;
     }
+    .hero-content {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .hero-name-pic {
+        flex-wrap: wrap;
+    }
+    .big-name {
+        font-size: clamp(2rem, 11vw, 4rem);
+        margin-bottom: 0;
+    }
     .experience-card {
         padding: 16px 8px 12px 12px;
-        background: url('experience_card_mobile.png') center/cover no-repeat;
-        width: 360px;
+        background: url('experience_card_mobile.png') center/100% 100% no-repeat;
+        width: calc(100% - 28px);
+        max-width: 360px;
         height: 280.5px;
         min-width: 0;
-        max-width: 100%;
-        margin-left: auto;
-        margin-right: auto;
+    }
+    .card-content-row {
+        gap: 10px;
+    }
+    .company-logo {
+        width: 48px;
+        height: 48px;
+    }
+    .experience-card h3 {
+        font-size: 1.3rem;
+    }
+    .experience-card h4 {
+        font-size: 1.05rem;
+    }
+    .experience-card span {
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+    }
+    .experience-card p {
+        font-size: 1rem;
+        line-height: 1.45;
     }
     .experience-card-wrapper {
+        justify-content: center;
         margin-top: -2px;
         transform: translateY(0.0px);
     }
@@ -451,8 +482,12 @@ footer {
     }
     .timeline {
         gap: 13px;
-        margin-left: auto;
-        margin-right: auto;
+        /* leave room for the gear racks and their end gears (up to ~67px on the right) */
+        /* at least 70px each side; on wide screens, hug the card (388px) and centre */
+        margin-left: max(70px, calc((100% - 388px) / 2));
+        margin-right: max(70px, calc((100% - 388px) / 2));
+        flex: 1;
+        min-width: 0;
     }
 
     .big-pic {
@@ -503,11 +538,14 @@ footer {
     }
     .experience-card {
         padding-left: 12px;
+        width: 100%;
+    }
+    .experience-card-wrapper .experience-card {
+        margin-left: 0;
     }
     .timeline {
-        margin-left: auto;
-        margin-right: auto;
-        width: 100%;
+        margin-left: 16px;
+        margin-right: 16px;
         align-items: center;
         box-sizing: border-box;
     }
