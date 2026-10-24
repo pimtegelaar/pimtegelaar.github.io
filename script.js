@@ -1,6 +1,69 @@
 "use strict";
 document.addEventListener('DOMContentLoaded', () => {
-    const renderTimeline = (timelineId, items) => {
+    const modal = document.createElement('div');
+    modal.className = 'card-modal';
+    modal.hidden = true;
+    modal.innerHTML = `
+        <div class="card-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+            <button type="button" class="card-modal-close" aria-label="Close">&times;</button>
+            <div class="card-modal-header">
+                <img class="company-logo" alt="" hidden />
+                <div>
+                    <h3 id="card-modal-title"></h3>
+                    <h4></h4>
+                    <span></span>
+                </div>
+            </div>
+            <div class="card-modal-body"></div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    const dialog = modal.querySelector('.card-modal-dialog');
+    const closeBtn = modal.querySelector('.card-modal-close');
+    let lastFocus = null;
+
+    const closeModal = () => {
+        modal.hidden = true;
+        document.body.classList.remove('modal-open');
+        if (lastFocus) lastFocus.focus();
+    };
+    const openModal = (item) => {
+        lastFocus = document.activeElement;
+        const logo = modal.querySelector('.company-logo');
+        logo.hidden = !item.logo;
+        if (item.logo) {
+            logo.src = item.logo;
+            logo.alt = `${item.company} logo`;
+        }
+        const title = modal.querySelector('h3');
+        title.textContent = '';
+        if (item.link) {
+            const a = document.createElement('a');
+            a.href = item.link;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = item.title;
+            title.appendChild(a);
+        } else {
+            title.textContent = item.title;
+        }
+        modal.querySelector('h4').textContent = item.company;
+        modal.querySelector('.card-modal-header span').textContent = item.period;
+        // moreInfo may contain HTML; falls back to the short description
+        modal.querySelector('.card-modal-body').innerHTML = item.moreInfo || item.description || '';
+        modal.hidden = false;
+        document.body.classList.add('modal-open');
+        closeBtn.focus();
+    };
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    const renderTimeline =(timelineId, items) => {
         const timeline = document.getElementById(timelineId);
         if (!timeline) return;
         items.forEach((item) => {
@@ -33,7 +96,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${item.description}</p>
                     </div>
                 </div>
+                ${item.moreInfo ? '<button type="button" class="more-info-btn">More info</button>' : ''}
             `;
+            if (item.moreInfo) {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    openModal(item);
+                });
+            }
             wrapper.appendChild(card);
             timeline.appendChild(wrapper);
         });
