@@ -20,7 +20,7 @@ window.experiences = [
         company: 'Info Support',
         period: 'Sep 2008 - Apr 2022',
         description: 'Consultancy for various clients.',
-        moreInfo: '',
+        moreInfo: '<h1>About Info Support</h1><p>Info Support is an independent, family-owned Dutch IT services provider specialized in developing business-critical software solutions, AI integration, cloud services, and data architecture. Founded in 1986, the company employs over 500 people across its offices in the Netherlands (headquartered in Veenendaal) and Belgium.</p><h1>Software Engineer</h1><p>Provided consultancy for various clients in various roles, including trainer, backend developer, frontend developer, mobile developer and cloud infra structure engineer. Within Info Support I was also active in the Java & Mobile communities, hosting presentations during the weekly Wednesday ISKA\'s.</p>',
         logo: 'companies/info_support.jpg'
     },
     {
