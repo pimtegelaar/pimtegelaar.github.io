@@ -137,8 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const SMOOTHING_MS = 120; // time constant of the follow-up smoothing; 0 = follow scroll exactly
     // gear.png has 22 teeth and the rack tile (see .gear-rack) has a 14px tooth pitch
     const GEAR_TEETH = 22;
-    const TOOTH_PITCH = 14;
-    const pitchCircumference = GEAR_TEETH * TOOTH_PITCH;
+    const RACK_TEETH = 30;      // teeth per tile of gear_rack.png (98 x 1701)
+    const RACK_ASPECT = 98 / 1701;
+    let pitchCircumference = 0;
+
+    // Chrome rounds a background tile to whole DEVICE pixels, which drifts on fractional densities
+    // (e.g. 2.8x phones). Size the tile to a whole number of device pixels and derive the pitch from it.
+    const fitRackTile = () => {
+        const dpr = window.devicePixelRatio || 1;
+        const tileCss = Math.round(420 * dpr) / dpr;
+        const widthCss = tileCss * RACK_ASPECT;
+        document.querySelectorAll('.gear-rack').forEach(rack => {
+            rack.style.backgroundSize = `${widthCss}px ${tileCss}px`;
+        });
+        pitchCircumference = GEAR_TEETH * (tileCss / RACK_TEETH);
+    };
+    fitRackTile();
     const GEAR_PHASE_DEG = 0; // fine-tune: rotates every gear relative to the rack teeth
     const maxOffset = 80;
     let lastTime = null;
@@ -173,8 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // gears sit this many px lower on phones/small screens (same breakpoint as the mobile layout in styles.css)
+    const MOBILE_GEAR_SHIFT = 2;
+    const mobileQuery = window.matchMedia('(max-width: 1000px)');
+
     const render = () => {
         const dpr = window.devicePixelRatio || 1;
+        const gearShift = mobileQuery.matches ? MOBILE_GEAR_SHIFT : 0;
         wrappers.forEach(w => {
             // snap to whole device pixels so every browser rasterizes the same positions
             const offset = Math.round(w.current * dpr) / dpr;
@@ -182,8 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // gear so the rest stay in phase with the teeth however far down the page they are
             const angle = ((w.centerOnRack - firstCenter + offset) / pitchCircumference) * 360 + GEAR_PHASE_DEG;
             w.card.style.transform = `translateY(${offset}px)`;
-            w.gear.style.transform = `translateY(calc(-50% + ${offset}px)) rotate(${angle}deg)`;
-            w.gearRight.style.transform = `translateY(calc(-50% + ${offset}px)) scaleX(-1) rotate(${angle}deg)`;
+            w.gear.style.transform = `translateY(calc(-50% + ${offset + gearShift}px)) rotate(${angle}deg)`;
+            w.gearRight.style.transform = `translateY(calc(-50% + ${offset + gearShift}px)) scaleX(-1) rotate(${angle}deg)`;
             const opacity = w.visible ? 1 : 0;
             w.card.style.opacity = opacity;
             w.gear.style.opacity = opacity;
@@ -225,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     const onLayout = () => {
+        fitRackTile();
         measureLayout();
         onScroll();
     };
