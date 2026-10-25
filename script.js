@@ -120,62 +120,117 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.className = 'parallax-overlay';
         hero.appendChild(overlay);
     }
-    const wrappers = document.querySelectorAll('.experience-card-wrapper');
-    const animateCards = () => {
-        const windowHeight = window.innerHeight;
-        wrappers.forEach(wrapper => {
-            const card = wrapper.querySelector('.experience-card');
-            const gear = wrapper.querySelector('.card-gear');
-            const gearRight = wrapper.querySelector('.card-gear-right');
-            if (!card || !gear || !gearRight) return;
-            const rect = card.getBoundingClientRect();
+    const wrappers = Array.from(document.querySelectorAll('.experience-card-wrapper')).map(wrapper => ({
+        wrapper,
+        card: wrapper.querySelector('.experience-card'),
+        gear: wrapper.querySelector('.card-gear'),
+        gearRight: wrapper.querySelector('.card-gear-right'),
+        rack: wrapper.closest('.timeline') && wrapper.closest('.timeline').querySelector('.gear-rack'),
+        centerOnRack: 0,
+        target: null,
+        current: null,
+        visible: null
+    })).filter(w => w.card && w.gear && w.gearRight);
+
+    // Card and both gears are driven by ONE smoothed value per wrapper, in one rAF loop, with no CSS
+    // transitions. That keeps them in lockstep and independent of how often a browser fires scroll events.
+    const SMOOTHING_MS = 120; // time constant of the follow-up smoothing; 0 = follow scroll exactly
+    // gear.png has 22 teeth and the rack tile (see .gear-rack) has a 14px tooth pitch
+    const GEAR_TEETH = 22;
+    const TOOTH_PITCH = 14;
+    const pitchCircumference = GEAR_TEETH * TOOTH_PITCH;
+    const GEAR_PHASE_DEG = 0; // fine-tune: rotates every gear relative to the rack teeth
+    const maxOffset = 80;
+    let lastTime = null;
+    let rafId = 0;
+
+    // Where each gear sits along the rack. Scroll-invariant, so measured only when layout changes.
+    let firstCenter = null;
+    const measureLayout = () => {
+        wrappers.forEach(w => {
+            const rect = w.wrapper.getBoundingClientRect();
+            const rackTop = w.rack ? w.rack.getBoundingClientRect().top : 0;
+            w.centerOnRack = rect.top + rect.height / 2 - rackTop;
+        });
+        firstCenter = wrappers.length ? wrappers[0].centerOnRack : 0;
+    };
+
+    const updateTargets = () => {
+        // clientHeight ignores the collapsing mobile address bar, unlike innerHeight
+        const windowHeight = document.documentElement.clientHeight;
+        wrappers.forEach(w => {
+            // measure the wrapper: the card is transformed, which would feed back into the result
+            const rect = w.wrapper.getBoundingClientRect();
             const cardHeight = rect.height || 160;
             const enter = windowHeight;
             const exit = -cardHeight;
-            let progress = (enter - rect.top) / (enter - exit);
-            progress = Math.max(0, Math.min(1, progress));
-            let cardOffset;
-            if (progress < 0.5) {
-                cardOffset = (1 - progress * 2) * 80;
-            } else {
-                cardOffset = -(progress - 0.5) * 2 * 80;
-            }
-            card.style.transform = `translateY(${cardOffset}px)`;
-            const isVisible = rect.bottom > 0 && rect.top < windowHeight;
-            card.style.opacity = isVisible ? 1 : 0;
-            const pitchDiameter = 97;
-            const angle = (cardOffset / (Math.PI * pitchDiameter)) * 360;
-            gear.classList.add('rotating');
-            gear.style.transform = `translateY(calc(-50% + ${cardOffset}px)) rotate(${angle}deg)`;
-            gearRight.classList.add('rotating');
-            gearRight.style.transform = `translateY(calc(-50% + ${cardOffset}px)) scaleX(-1) rotate(${angle}deg)`;
-            if (!isVisible) {
-                card.style.pointerEvents = 'none';
-                gear.style.opacity = 0;
-                gearRight.style.opacity = 0;
-            } else {
-                card.style.pointerEvents = '';
-                gear.style.opacity = 1;
-                gearRight.style.opacity = 1;
-            }
+            const progress = Math.max(0, Math.min(1, (enter - rect.top) / (enter - exit)));
+            w.target = progress < 0.5
+                ? (1 - progress * 2) * maxOffset
+                : -(progress - 0.5) * 2 * maxOffset;
+            w.visible = rect.bottom > 0 && rect.top < windowHeight;
+            if (w.current === null) w.current = w.target;
         });
     };
-    let scrollTicking = false;
-    const onScroll = () => {
-        if (window.scrollY > 60) {
-            document.body.classList.add('scrolled');
-        }
-        else {
-            document.body.classList.remove('scrolled');
-        }
-        animateCards();
-        scrollTicking = false;
+
+    const render = () => {
+        const dpr = window.devicePixelRatio || 1;
+        wrappers.forEach(w => {
+            // snap to whole device pixels so every browser rasterizes the same positions
+            const offset = Math.round(w.current * dpr) / dpr;
+            // rolling on a fixed rack: rotation follows the gear's travel along it, measured from the first
+            // gear so the rest stay in phase with the teeth however far down the page they are
+            const angle = ((w.centerOnRack - firstCenter + offset) / pitchCircumference) * 360 + GEAR_PHASE_DEG;
+            w.card.style.transform = `translateY(${offset}px)`;
+            w.gear.style.transform = `translateY(calc(-50% + ${offset}px)) rotate(${angle}deg)`;
+            w.gearRight.style.transform = `translateY(calc(-50% + ${offset}px)) scaleX(-1) rotate(${angle}deg)`;
+            const opacity = w.visible ? 1 : 0;
+            w.card.style.opacity = opacity;
+            w.gear.style.opacity = opacity;
+            w.gearRight.style.opacity = opacity;
+            w.card.style.pointerEvents = w.visible ? '' : 'none';
+        });
     };
-    window.addEventListener('scroll', () => {
-        if (!scrollTicking) {
-            scrollTicking = true;
-            requestAnimationFrame(onScroll);
+
+    const tick = (now) => {
+        rafId = 0;
+        const dt = lastTime === null ? 16 : Math.min(now - lastTime, 100);
+        lastTime = now;
+        const k = SMOOTHING_MS > 0 ? 1 - Math.exp(-dt / SMOOTHING_MS) : 1;
+        let moving = false;
+        wrappers.forEach(w => {
+            const diff = w.target - w.current;
+            if (Math.abs(diff) < 0.01) {
+                w.current = w.target;
+            } else {
+                w.current += diff * k;
+                moving = true;
+            }
+        });
+        render();
+        if (moving) {
+            rafId = requestAnimationFrame(tick);
+        } else {
+            lastTime = null;
         }
-    }, { passive: true });
-    animateCards();
+    };
+    const requestTick = () => {
+        if (!rafId) rafId = requestAnimationFrame(tick);
+    };
+
+    const onScroll = () => {
+        document.body.classList.toggle('scrolled', window.scrollY > 60);
+        updateTargets();
+        requestTick();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const onLayout = () => {
+        measureLayout();
+        onScroll();
+    };
+    window.addEventListener('resize', onLayout);
+    window.addEventListener('load', onLayout);
+    measureLayout();
+    updateTargets();
+    render();
 });
