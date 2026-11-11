@@ -713,3 +713,81 @@ body.modal-open {
         display: none;
     }
 }
+
+/* games page: shorter header */
+.hero.hero-compact {
+    --header-height: 320px;
+}
+
+/* picture cards (games page): the image takes up most of the card, leaving a strip on the right for the GitHub button */
+.experience-card .game-picture {
+    position: absolute;
+    top: 5%;
+    left: 4%;
+    width: 76%;
+    height: 90%;
+    object-fit: contain; /* keep the aspect ratio: scale to fit inside the box, never crop */
+    text-shadow: none;
+}
+/* the <picture> wrapper must not become the positioning parent (".experience-card *" makes everything relative) */
+.experience-card picture {
+    position: static;
+    display: contents;
+}
+
+.github-btn {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    width: 16%;
+    height: auto;
+    max-height: 90%;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    transition: box-shadow 0.25s, transform 0.18s, background 0.25s;
+}
+
+.github-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.github-btn:hover,
+.github-btn:focus-visible {
+    background: rgba(42,82,152,0.18);
+    box-shadow: 0 0 16px 4px #2a5298cc, 0 0 32px 8px #1e3c72cc;
+    transform: translateY(-50%) scale(1.12);
+}
+
+/* games page (mobile): stack the image on top and the GitHub button below it */
+@media (max-width: 1000px) {
+    .experience-card .game-picture {
+        top: 4%;
+        left: 5%;
+        width: 90%;
+        height: 62%;
+    }
+    .github-btn {
+        top: auto;
+        right: auto;
+        bottom: 4%;
+        left: 50%;
+        width: auto;
+        height: 26%;
+        max-height: 26%;
+        transform: translateX(-50%);
+    }
+    .github-btn:hover,
+    .github-btn:focus-visible {
+        transform: translateX(-50%) scale(1.12);
+    }
+}
