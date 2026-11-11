@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games | Pim Tegelaar</title>
+    <link rel="icon" type="image/jpeg" href="me.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="hero hero-compact">
+        <div class="hero-content">
+            <h1 class="big-name">Games</h1>
+        </div>
+    </header>
+    <main>
+        <section class="games" id="games">
+            <div style="display: flex; align-items: flex-start; position: relative;">
+                <div class="timeline" id="games-timeline" style="position: relative;">
+                    <div class="gear-rack">
+                        <img src="gear2.png" alt="" style="position:absolute; left:40%; top:0; width:64px; height:64px; transform:translate(-50%,-50%); z-index:2; pointer-events:none;">
+                        <img src="gear2.png" alt="" style="position:absolute; left:40%; bottom:0; width:64px; height:64px; transform:translate(-50%,50%); z-index:2; pointer-events:none;">
+                    </div>
+                    <!-- Game cards will be injected here by JS -->
+                    <div class="gear-rack gear-rack-right">
+                        <img src="gear2.png" alt="" style="position:absolute; left:30%; top:0; width:64px; height:64px; transform:translate(-50%,-50%); z-index:2; pointer-events:none;">
+                        <img src="gear2.png" alt="" style="position:absolute; left:30%; bottom:0; width:64px; height:64px; transform:translate(-50%,50%); z-index:2; pointer-events:none;">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Pim Tegelaar</p>
+    </footer>
+    <script src="games.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -88,22 +88,43 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'experience-card';
             card.innerHTML = `
                 <div class="card-content-row">
-                    ${item.logo ? `<img class="company-logo" src="${item.logo}" alt="${item.company} logo" />` : ''}
+                    ${item.logo ? `<img class="company-logo" src="${item.logo}" alt="${item.company || item.title} logo" />` : ''}
                     <div class="card-details">
                         <h3>${item.link ? `<a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>` : item.title}</h3>
-                        <h4>${item.company}</h4>
-                        <span>${item.period}</span>
+                        <h4>${item.company || ''}</h4>
+                        <span>${item.period || ''}</span>
                         <p>${item.description}</p>
                     </div>
                 </div>
                 ${item.moreInfo ? '<button type="button" class="more-info-btn">More info</button>' : ''}
             `;
+            if (item.image) {
+                // picture card: the image fills 90% of the card (imageMobile is used on small screens)
+                card.classList.add('picture-card');
+                card.innerHTML = `<picture>
+                    ${item.imageMobile ? `<source media="(max-width: 1000px)" srcset="${item.imageMobile}">` : ''}
+                    <img class="game-picture" src="${item.image}" alt="${item.title}">
+                </picture>
+                ${item.github ? `<a class="github-btn" href="${item.github}" target="_blank" rel="noopener" aria-label="${item.title} on GitHub"><img src="github.png" alt="" /></a>` : ''}`;
+            }
             if (item.moreInfo) {
                 card.style.cursor = 'pointer';
                 card.addEventListener('click', (e) => {
                     if (e.target.closest('a')) return;
                     openModal(item);
                 });
+            }
+            if (item.url) {
+                // whole card is a link (used by the games page)
+                card.style.cursor = 'pointer';
+                card.setAttribute('role', 'link');
+                card.tabIndex = 0;
+                const go = () => { window.open(item.url, '_blank', 'noopener'); };
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    go();
+                });
+                card.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
             }
             wrapper.appendChild(card);
             timeline.appendChild(wrapper);
@@ -113,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTimeline('timeline', window.experiences || []);
     renderTimeline('education-timeline', window.education || []);
     renderTimeline('talks-timeline', window.talks || []);
+    renderTimeline('games-timeline', window.games || []);
 
     const hero = document.querySelector('.hero');
     if (hero && !document.querySelector('.parallax-overlay')) {
